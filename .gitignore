@@ -1,6 +1,3 @@
-# environment config file
-db.sqlite3
-
 # vscode files
 .vscode/
 
