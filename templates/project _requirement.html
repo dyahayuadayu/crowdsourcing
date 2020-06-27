@@ -1,0 +1,157 @@
+{% extends 'base_blog.html' %}
+{% load static %}
+
+{% block content %}
+
+<style>
+  .post-body img {
+    width: 100%;
+  }
+</style>
+
+    <div class="container">
+      <div class="row">
+        <!-- Latest Project -->
+        <main class="post blog-post col-lg-8">
+          <div class="container">
+            <div class="post-single">
+              <div class="post-details">
+                <div class="post-meta d-flex justify-content-between">
+                  <div class="category">
+                    <a>REQUIREMENT DISCUSSION</a>
+                  </div>
+                </div>
+
+              <div class="row">
+                <div class="col-10">
+                  <h2>{{ requirement.content }}</h2>
+                </div>
+              </div>
+                <div class="post-footer d-flex align-items-center flex-column flex-sm-row">
+                    <div class="avatar"><img src="{{ requirement.user.profile.image.url }}" alt="..." class="img-fluid"></div>
+                    <div class="title"><strong>{{ requirement.user.username }}</strong></div>
+                      <div class="categorie d-flex align-items-end">
+                        <span class="date">{{ requirement.timestamp|timesince }} ago</span>
+                        <span class="date">{{ requirement.timestamp }}</span>
+                      </div>
+                {% if request.user.is_authenticated %}
+                <div class="col-1">
+                  {% if is_reqliked %}
+                  <a href="{% url 'like-req' pk=requirement.pk %}">
+                    <i class="fa fa-thumbs-up fa-lg" aria-hidden="true"></i>
+                  </a>
+                  {% else %}
+                  <a href="{% url 'like-req' pk=requirement.pk %}">
+                    <i class="fa fa-thumbs-o-up fa-lg" aria-hidden="true"></i>
+                  </a>
+                  {% endif %}
+                  {{ requirement.reqlike_count }}
+                </div>
+                <div class="col-1">
+                  {% if is_reqdisliked %}
+                  <a href="{% url 'dislike-req' pk=requirement.pk %}">
+                    <i class="fa fa-thumbs-down fa-lg" aria-hidden="true"></i>
+                  </a>
+                  {% else %}
+                  <a href="{% url 'dislike-req' pk=requirement.pk %}">
+                    <i class="fa fa-thumbs-o-down fa-lg" aria-hidden="true"></i>
+                  </a>
+                  {% endif %}
+                  {{ requirement.reqdislike_count }}
+                </div>
+                {% endif %}
+              </div>
+                    </div>
+              </div>
+              <div class="post-comments">
+                <header>
+                  <h3 class="h6">Requirement Discussion<span class="no-of-comments">({{ requirement.comment_count }})</span></h3>
+                </header>
+                {% for comment in requirement.get_comments %}
+                <div class="comment">
+                  <div class="comment-header d-flex justify-content-between">
+                    <div class="user d-flex align-items-center">
+                      <div class="image">
+                        <img src="{{ requirement.user.profile.image.url }}" alt="..." class="img-fluid rounded-circle" style="width: 40px;">
+                      </div>
+                      <div class="title"><strong>{{ comment.user.username }}</strong>
+                        
+                        <div class="categorie d-flex align-items-end">
+                          <span class="date">{{ comment.timestamp|timesince }} ago</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="comment-body">
+                    <p>{{ comment.content }}</p>
+                    {% for child_comment in comment.children %}
+                    <div class="comment">
+                      <div class="comment-header d-flex justify-content-between">
+                        <div class="user d-flex align-items-center">
+                          <div class="image">
+                            <img src="{{ requirement.user.profile.image.url }}" alt="..." class="img-fluid rounded-circle" style="width: 40px;">
+                          </div>
+                          <div class="title"><strong>{{ child_comment.user }}</strong>
+                            <div class="categorie d-flex align-items-end">
+                              <span class="date">{{ child_comment.timestamp|timesince }} ago</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="comment-body">
+                        <p>{{ child_comment.content }}</p>
+                      </div>
+                    </div>
+                    {% endfor %}
+                    {% if request.user.is_authenticated %}
+                    <div class="replied-comments container mt-2">
+                      <form method="POST" action="." class="commenting-form">
+                        {% csrf_token %}
+                        <input type="hidden" name="parent_id" value="{{ comment.id }}">
+                        <div class="row">
+                          <div class="form-group col-md-12">
+                            {{ comments_form }}
+                          </div>
+                          <div class="form-group col-md-12">
+                            <button type="submit" class="btn btn-secondary">Send</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                    {% endif %} 
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+              <div class="post-comments">
+                <div class="add-comment">
+                  <header>
+                    <h3 class="h6">Give Comments</h3>
+                  </header>
+                {% if request.user.is_authenticated %}
+                  {% if error %}
+                    <h3 style="color: red">{{ error }}</h3>
+                  {% endif %}
+                  <form method="POST" action="." class="commenting-form">
+                    {% csrf_token %}
+                    <div class="row">
+                      <div class="form-group col-md-12">
+                        {{ comments_form }}
+                      </div>
+                      <div class="form-group col-md-12">
+                        <button type="submit" class="btn btn-secondary">Send</button>
+                      </div>
+                    </div>
+                  </form>
+                {% else %}
+                  <a href="{% url 'login' %}" class="btn btn-primary">Login for adding comments</a>
+                {% endif %}
+                </div>
+              </div>
+            </div>
+        </main>
+        {% include 'sidebar.html' with most_recent=most_recent category_count=category_count %}
+      </div>
+    </div>
+
+{% endblock content %}
