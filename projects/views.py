@@ -203,7 +203,7 @@ class ProjectDetailView(DetailView):
 
 class RequirementDetailView(DetailView):
     model = Requirement
-    template_name = 'project _requirement.html'
+    template_name = 'project_requirement.html'
     context_object_name = 'requirement'
     comments_form = CommentForm()   
 
