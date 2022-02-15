@@ -100,7 +100,7 @@
                           <div class="categorie d-flex align-items-end">
                             <span class="date">{{ requirement.timestamp|timesince }} ago</span>
                             <span>&nbsp &nbsp &nbsp</span>
-                            <a href="{% url 'requirement-delete' pk=requirement.pk %}">Delete</a>
+                            <a href="{% url 'requirement-delete' pk=requirement.pk %}" class="btn btn-sm btn-outline-danger" type="button">Delete</a>
                           </div>
                         </div>
                       </div>
@@ -122,7 +122,7 @@
                       {% endif %}
                     </div>
                     <div class="comment-body">
-                      <p>{{ requirement.content }}
+                        {{ requirement.content }}
                         <form method="POST" action="." class="commenting-form">
                           {% csrf_token %}
                           <div class="row">
@@ -144,7 +144,6 @@
                             {% endif %}
                           </div>
                         </form>
-                      </p>
                         <div class="post-footer d-flex align-items-center flex-column flex-sm-row">
                             <div class="d-flex align-items-center flex-wrap">
                               <div class="date"><i class="icon-comment" aria-hidden="true"></i><a href="{{ requirement.get_absolute_url }}"> View Discussion</a></div>
@@ -184,7 +183,6 @@
                 {% endif %}
               </div>
             </div>
-          </div>
         </main>
         {% include 'sidebar.html' with most_recent=most_recent category_count=category_count %}
       </div>
